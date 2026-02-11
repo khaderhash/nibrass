@@ -12,11 +12,11 @@ class LoginResponseModel extends UserEntity {
     required this.access,
     required this.refresh,
   }) : super(
-    universityId: universityId,
-    firstName: firstName,
-    lastName: lastName,
-    role: role,
-  );
+         universityId: universityId,
+         firstName: firstName,
+         lastName: lastName,
+         role: role,
+       );
 
   factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
     return LoginResponseModel(

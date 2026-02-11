@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../manager/explore_controller.dart';
-import '../../data/models/explore_models.dart';
 
 class ExplorePage extends StatelessWidget {
   final ExploreController controller = Get.put(ExploreController());
@@ -11,12 +10,32 @@ class ExplorePage extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        backgroundColor: const Color(0xFFF8F9FD),
         appBar: AppBar(
-          title: const Text("Explore Campus"),
-          bottom: const TabBar(
-            tabs: [
-              Tab(text: "Services", icon: Icon(Icons.local_activity)),
-              Tab(text: "Available Rooms", icon: Icon(Icons.bedroom_parent)),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+              size: 20,
+            ),
+            onPressed: () => Get.back(),
+          ),
+          centerTitle: true,
+          title: const Text(
+            "Explore Campus",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+          bottom: TabBar(
+            labelColor: Colors.blue.shade800,
+            unselectedLabelColor: Colors.grey,
+            indicatorColor: Colors.blue.shade800,
+            indicatorWeight: 3,
+            labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+            tabs: const [
+              Tab(text: "Services"),
+              Tab(text: "Housing"),
             ],
           ),
         ),
@@ -25,10 +44,7 @@ class ExplorePage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           return TabBarView(
-            children: [
-              _buildServicesList(),
-              _buildRoomsList(),
-            ],
+            children: [_buildServicesList(), _buildRoomsList()],
           );
         }),
       ),
@@ -44,36 +60,98 @@ class ExplorePage extends StatelessWidget {
       itemCount: controller.servicesList.length,
       itemBuilder: (context, index) {
         final service = controller.servicesList[index];
-        return Card(
-          elevation: 3,
+        return Container(
           margin: const EdgeInsets.only(bottom: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.08),
+                blurRadius: 15,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Container(
+                  height: 60,
+                  width: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.local_activity,
+                    color: Colors.blue.shade800,
+                    size: 30,
+                  ),
+                ),
+                const SizedBox(width: 16),
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        service.name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.access_time,
+                            size: 14,
+                            color: Colors.grey,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            "${service.openingTime.substring(0, 5)} - ${service.closingTime.substring(0, 5)}",
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        service.days,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                Column(
                   children: [
-                    Text(service.name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
-                    Chip(
-                      label: Text("\$${service.price}"),
-                      backgroundColor: Colors.blue.shade50,
-                      labelStyle: TextStyle(color: Colors.blue.shade900),
-                    )
+                    Text(
+                      "\$${service.price}",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue.shade900,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      "per term",
+                      style: TextStyle(fontSize: 10, color: Colors.grey),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    const Icon(Icons.access_time, size: 16, color: Colors.grey),
-                    const SizedBox(width: 4),
-                    Text("${service.openingTime} - ${service.closingTime}", style: const TextStyle(color: Colors.grey)),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(service.days, style: const TextStyle(color: Colors.grey)),
               ],
             ),
           ),
@@ -91,34 +169,124 @@ class ExplorePage extends StatelessWidget {
       itemCount: controller.roomsList.length,
       itemBuilder: (context, index) {
         final room = controller.roomsList[index];
-        return Card(
-          elevation: 3,
+        return Container(
           margin: const EdgeInsets.only(bottom: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          child: ListTile(
-            contentPadding: const EdgeInsets.all(16),
-            leading: CircleAvatar(
-              backgroundColor: Colors.blue.shade100,
-              child: Text(room.dormCode, style: TextStyle(color: Colors.blue.shade900, fontWeight: FontWeight.bold)),
-            ),
-            title: Text("Room ${room.roomCode}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 4),
-                Text("Floor: ${room.floor}"),
-                const SizedBox(height: 4),
-                Text("Fees: \$${room.monthlyFee} / month"),
-                Text("Electricity: \$${room.electricityFee} (est.)", style: const TextStyle(fontSize: 12, color: Colors.grey)),
-              ],
-            ),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-            onTap: () {
-              Get.snackbar("Info", "Visit the administration office to book this room.");
-            },
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.08),
+                blurRadius: 15,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50.withOpacity(0.5),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.apartment,
+                          color: Colors.blue.shade800,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          "Dorm ${room.dormCode}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue.shade900,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      "\$${room.monthlyFee}/mo",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Room Number",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          room.roomCode,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    _buildDetailItem(Icons.layers, "Floor", "${room.floor}"),
+                    _buildDetailItem(
+                      Icons.flash_on,
+                      "Electricity",
+                      "\$${room.electricityFee}",
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         );
       },
+    );
+  }
+
+  Widget _buildDetailItem(IconData icon, String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 14, color: Colors.grey),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+            ),
+          ],
+        ),
+        const SizedBox(height: 2),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+        ),
+      ],
     );
   }
 
@@ -127,7 +295,14 @@ class ExplorePage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.inbox, size: 60, color: Colors.grey),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.search_off, size: 40, color: Colors.grey),
+          ),
           const SizedBox(height: 16),
           Text(text, style: const TextStyle(color: Colors.grey)),
         ],

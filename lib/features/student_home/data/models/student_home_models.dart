@@ -1,11 +1,13 @@
 class StudentFullData {
   final String firstName;
+  final String lastName;
   final String major;
-  final RoomModel? room; // Nullable
+  final RoomModel? room;
   final List<ServiceSubModel> services;
 
   StudentFullData({
     required this.firstName,
+    required this.lastName,
     required this.major,
     this.room,
     required this.services,
@@ -14,6 +16,7 @@ class StudentFullData {
   factory StudentFullData.fromJson(Map<String, dynamic> json) {
     return StudentFullData(
       firstName: json['user']['first_name'],
+      lastName: json['user']['last_name'],
       major: json['student_profile']['major'],
       room: json['room'] != null ? RoomModel.fromJson(json['room']) : null,
       services: (json['services'] as List)

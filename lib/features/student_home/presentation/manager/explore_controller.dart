@@ -30,7 +30,6 @@ class ExploreController extends GetxController {
       roomsList.value = (roomsRes.data as List)
           .map((e) => AvailableRoomModel.fromJson(e))
           .toList();
-
     } catch (e) {
       print("Explore Error: $e");
       Get.snackbar("Error", "Could not load data");

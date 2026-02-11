@@ -21,7 +21,7 @@ class _SplashPageState extends State<SplashPage> {
     final token = await storage.read(key: AppConstants.tokenKey);
 
     if (token != null) {
-      Get.offAllNamed('/student_home');
+      Get.offAllNamed('/main');
     } else {
       Get.offAllNamed('/login');
     }
@@ -32,7 +32,14 @@ class _SplashPageState extends State<SplashPage> {
     return const Scaffold(
       backgroundColor: Colors.blue,
       body: Center(
-        child: Text("Nibrass Hub", style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
+        child: Text(
+          "Nibrass Hub",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
